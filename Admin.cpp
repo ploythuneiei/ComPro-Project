@@ -4,26 +4,35 @@
 
 using namespace std;
 
+class Movie{
+    public:
+        string name;
+        double ticketPrice;
+        int duration;
+        vector<int> showtimes;
+};
+
+class Admin{
+    private:
+        const string pass = "DoBeforeDebug";
+
+    public:
+        bool adminlogin();
+};
+
 const int MAX_MOVIE = 10;
 const int OPEN_TIME = 600;   // เปิด10:00
 const int CLOSE_TIME = 1440; // ปิด 24:00
-const int BREAK_TIME = 30;
+const int BREAK_TIME = 30; // พัก 30 นาที
 
-
-vector<string> movieName;
-vector<double> ticketPrice;
-vector<int> movieDuration;
-vector< vector<int> > movieTime;
-
-int movieCount = 0;
+vector<Movie> movies;
 
 void addMovie();
 void editTicketPrice(int movieIndex);
 void addShowtime(int movieIndex);
 void printTime(int minute);
 
-bool adminlogin(){
-    string pass = "DoBeforeDebug";
+bool Admin::adminlogin(){
     string input;
     cout << "Please enter password :";
     cin >> input;
@@ -32,20 +41,21 @@ bool adminlogin(){
 }
 
 int selectMovieForAdmin(){
-    if(movieCount == 0){
+    if(movies.size() == 0){
         cout << "No movie available\n";
         return -1;
     }
 
-    for(int i = 0; i < movieCount; i++){
-        cout << i+1 << ". " << movieName[i] << endl;
+    for(int i = 0; i < movies.size(); i++){
+        cout << i+1 << ". " << movies[i].name << endl;
     }
 
     int choice;
     cout << "Select movie: ";
     cin >> choice;
 
-    if(choice < 1 || choice > movieCount){
+    if(choice < 1 || choice > movies.size()
+){
         cout << "Invalid choice\n";
         return -1;
     }
@@ -55,69 +65,56 @@ int selectMovieForAdmin(){
 
 
 void adminMenu(){
-    int input;
-    do{
-        cout << "Please choose menu\n";
+    while(true){
+        int input;
         cout << "1.Add movie\n2.Edit ticket price\n3.Add showtime\n4.Log out\n";
         cin >> input;
-    }while(input < 1 || input > 4);
 
-    if(input == 1){
-        addMovie();
-    }
-    else if(input == 2){
-        int idx = selectMovieForAdmin();
-        if(idx != -1) editTicketPrice(idx);
-    }
-    else if(input == 3){
-        int idx = selectMovieForAdmin();
-        if(idx != -1) addShowtime(idx);
-    }
-    else{
-        return;
+        if(input == 1) addMovie();
+        else if(input == 2){
+            int idx = selectMovieForAdmin();
+            if(idx != -1) editTicketPrice(idx);
+        }
+        else if(input == 3){
+            int idx = selectMovieForAdmin();
+            if(idx != -1) addShowtime(idx);
+        }
+        else break;
     }
 }
+
 
 
 void addMovie(){
 
-    if(movieCount >= MAX_MOVIE){
+    if(movies.size() >= MAX_MOVIE){
         cout << "Cannot add more movies\n";
         return;
     }
 
-    string name;
-    double price,duration;
+    Movie m;
 
     cout << "Enter movie name: ";
-    cin.ignore();
-    getline(cin, name);
+    getline(cin >> ws, m.name);
+
 
     cout << "Enter ticket price: ";
-    cin >> price;
+    cin >> m.ticketPrice;
 
     cout << "Enter movie duration(minutes): ";
-    cin >> duration;
+    cin >> m.duration;
 
 
-    movieName.push_back(name);
-    ticketPrice.push_back(price);
-    movieDuration.push_back(duration);
-    movieTime.push_back(vector<int>());
-
-    movieCount++;
+    movies.push_back(m);
 
     cout << "Movie added successfully\n";
 
-    int movieIndex = movieCount - 1;
-    cout << "Movie added at index " << movieIndex << endl;
-
-    addShowtime(movieIndex);
+    addShowtime(movies.size() - 1);
 }
 
 void editTicketPrice(int movieIndex){
 
-    if(movieIndex < 0 || movieIndex >= movieCount){
+    if(movieIndex < 0 || movieIndex >= movies.size()){
         cout << "Invalid movie index\n";
         return;
     }
@@ -126,25 +123,24 @@ void editTicketPrice(int movieIndex){
     cout << "Please input new ticket price: ";
     cin >> price;
 
-    ticketPrice[movieIndex] = price;
+    movies[movieIndex].ticketPrice = price;
 
     cout << "Ticket price updated successfully\n";
 }
 
 void addShowtime(int movieIndex){
-    movieTime[movieIndex].clear();
+    movies[movieIndex].showtimes.clear();
 
     int currentTime = OPEN_TIME;
 
-    while(currentTime + movieDuration[movieIndex] + BREAK_TIME <= CLOSE_TIME){
-        movieTime[movieIndex].push_back(currentTime);
-        currentTime = currentTime + movieDuration[movieIndex] + BREAK_TIME;
+    while(currentTime + movies[movieIndex].duration + BREAK_TIME <= CLOSE_TIME){
+        movies[movieIndex].showtimes.push_back(currentTime);
+        currentTime = currentTime + movies[movieIndex].duration + BREAK_TIME;
     }
 
     cout << "Showtimes added: \n";
-    for(int i = 0; i < movieTime[movieIndex].size(); i++){
-        int minute = movieTime[movieIndex][i];
-        printTime(minute);
+    for(int i = 0; i < movies[movieIndex].showtimes.size(); i++){
+        printTime(movies[movieIndex].showtimes[i]);
         cout << endl;
     }
 }
@@ -160,7 +156,8 @@ void printTime(int minute){
 }
 
 int main(){
-    if(adminlogin()){
+    Admin admin;
+    if(admin.adminlogin()){
         adminMenu();
     }
     else{
