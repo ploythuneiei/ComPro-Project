@@ -54,8 +54,7 @@ int selectMovieForAdmin(){
     cout << "Select movie: ";
     cin >> choice;
 
-    if(choice < 1 || choice > movies.size()
-){
+    if(choice < 1 || choice > movies.size()){
         cout << "Invalid choice\n";
         return -1;
     }
@@ -96,7 +95,6 @@ void addMovie(){
 
     cout << "Enter movie name: ";
     getline(cin >> ws, m.name);
-
 
     cout << "Enter ticket price: ";
     cin >> m.ticketPrice;
