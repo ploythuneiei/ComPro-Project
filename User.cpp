@@ -16,16 +16,10 @@ class Movie{
 };
 
 class Cinema{
-    Movie allMovie[10];
-    int movieCount=0;
     public:
+        Movie allMovie[10];
+        int movieCount=0;
         void showMovie();
-        Movie& getMovie(int MovieIdx){
-            return allMovie[MovieIdx];
-        }
-        int getMovieCount(){
-            return movieCount;
-        }
 
 };
 
@@ -89,7 +83,7 @@ int User::selectMovie(Cinema &c){
     cin>>choice;
     choice--;
 
-    while(choice<0||choice>=c.getMovieCount()){
+    while(choice<0||choice>=c.movieCount){
         cout<<"Invalid selection. Try again: \n";
         cin>>choice;
         choice--;
@@ -98,7 +92,7 @@ int User::selectMovie(Cinema &c){
 }
 
 void User::showShowtime(Cinema &c,int movieIdx){
-    Movie &m=c.getMovie(movieIdx);
+    Movie &m=c.allMovie[movieIdx];
     
     for(int i=0;i<m.timecount;i++){
         cout<<"round["<<i+1<<"] "<<m.Showtime[i]<<"\n";
@@ -107,7 +101,7 @@ void User::showShowtime(Cinema &c,int movieIdx){
 
 int User::selectShowTime(Cinema &c,int movieIdx){
     
-    Movie &m=c.getMovie(movieIdx);
+    Movie &m=c.allMovie[movieIdx];
     int choice;
     
     cout<<"Select showtime:\n";
@@ -123,13 +117,13 @@ int User::selectShowTime(Cinema &c,int movieIdx){
 }
 
 int User::countShowtime(Cinema &c,int movieIdx){
-    return c.getMovie(movieIdx).timecount;
+    return c.allMovie[movieIdx].timecount;
     
 }
 
 void User::booking(Cinema &c){
 
-    if(c.getMovieCount()==0){
+    if(c.movieCount==0){
         cout<<"No movies available.\n";
         return;
     }
@@ -150,10 +144,10 @@ void User::booking(Cinema &c){
     
     cout<<"\n========== BOOKING ==========\n";
     cout<<"Name: "<<userName<<"\n";
-    cout<<"Movie: "<<c.getMovie(UserMovieIdx).title<<"\n";
-    cout<<"Genre: "<<c.getMovie(UserMovieIdx).genre<<"\n";
-    cout<<"Duration(min): "<<c.getMovie(UserMovieIdx).duration<<"\n";
-    cout<<"Show time: "<<c.getMovie(UserMovieIdx).Showtime[UserShowTimeIdx]<<"\n";
+    cout<<"Movie: "<<c.allMovie[UserMovieIdx].title<<"\n";
+    cout<<"Genre: "<<c.allMovie[UserMovieIdx].genre<<"\n";
+    cout<<"Duration(min): "<<c.allMovie[UserMovieIdx].duration<<"\n";
+    cout<<"Show time: "<<c.allMovie[UserMovieIdx].Showtime[UserShowTimeIdx]<<"\n";
     cout<<"===============================\n";
 }
 
