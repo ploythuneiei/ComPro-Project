@@ -92,27 +92,6 @@ int selectMovieForAdmin(){
     return choice - 1;
 }
 
-void addMovie(){
-    if(movies.size() >= MAX_MOVIE){
-        cout << "Cannot add more movies\n";
-        return;
-    }
-
-    Movie m;
-    cout << "Enter movie index: ";
-    cin >> m.seats.movie;
-    cout << "Enter movie title: ";
-    getline(cin >> ws, m.title);
-    cout << "Enter ticket price: ";
-    cin >> m.ticketPrice;
-    cout << "Enter movie duration(minutes): ";
-    cin >> m.duration;
-    movies.push_back(m);
-    cout << "Movie added successfully\n";
-    addShowtime(movies.size() - 1);
-    resetSeat(m.seats);
-}
-
 void editTicketPrice(int movieIndex){
 
     if(movieIndex < 0 || movieIndex >= movies.size()){
@@ -144,6 +123,27 @@ void addShowtime(int movieIndex){
         printTime(movies[movieIndex].showtimes[i]);
         cout << endl;
     }
+}
+
+void addMovie(){
+    if(movies.size() >= MAX_MOVIE){
+        cout << "Cannot add more movies\n";
+        return;
+    }
+
+    Movie m;
+    cout << "Enter movie index: ";
+    cin >> m.seats.movie;
+    cout << "Enter movie title: ";
+    getline(cin >> ws, m.title);
+    cout << "Enter ticket price: ";
+    cin >> m.ticketPrice;
+    cout << "Enter movie duration(minutes): ";
+    cin >> m.duration;
+    movies.push_back(m);
+    cout << "Movie added successfully\n";
+    addShowtime(movies.size() - 1);
+    resetSeat(m.seats.movie);
 }
 
 void printTime(int minute){
@@ -241,10 +241,12 @@ int User::selectShowTime(Cinema &c,int movieIdx){
     return choice;
 }
 
-void resetSeat(seat a){
-    for(int i=0;i<row;i++){
-        for(int j=0;j<col;j++){
-            seats[a.movie][a.showtime][i][j]=false;
+void resetSeat(int movieIndex){
+    for(int t=0;t<10;t++){
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                seats[movieIndex][t][i][j]=false;
+            }
         }
     }
 }
@@ -276,7 +278,7 @@ void bookSeat(seat &a){
 
 int showBookingSum(seat a){
     int available=0,booked=0;
-    for(int i=0;i<row*col;i++){
+    for(int i=0;i<row;i++){
         for(int j=0;j<col;j++){
             if(!seats[a.movie][a.showtime][i][j]) available+=1;
             else booked+=1;
@@ -285,10 +287,9 @@ int showBookingSum(seat a){
     return booked;
 }
 
-double calculatePrice(seat a){
-    Movie m;
-    int amount = showBookingSum(m.seats);
-    return (double) m.ticketPrice * amount;
+double calculatePrice(int movieIndex, seat a){
+    int amount = showBookingSum(a);
+    return movies[movieIndex].ticketPrice * amount;
 }
 
 void showReceipt(seat a, double price){
