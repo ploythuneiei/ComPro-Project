@@ -14,23 +14,24 @@ int main(){
         seat a;
         User b;
         Cinema c;
+        Movie m;
 
         b.showMovieList(c);
         int choice = b.selectMovie(c);
-        a.movie = choice;
+        m.movie = choice;
         b.showShowtime(c, choice);
-        b.selectShowTime(c, choice);
+        int showtime=b.selectShowTime(c, choice);
 
-        showSeatPlan(a);
+        showSeatPlan(m,showtime);
         cout << "Select your seat\n Enter row: ";
         cin >> a.row;
         cout << "Enter column: ";
         cin >> a.col;
 
         while (true){
-            if (isSeatAvailable(a)){
+            if (isSeatAvailable(m,a)){
                 cout << "Seat available\n";
-                bookSeat(a);
+                bookSeat(m,a);
                 cout << "Booking successful\n";
                 break;
             } else {
@@ -40,8 +41,8 @@ int main(){
             }
         }
 
-        double price = calculatePrice(a);
-        showReceipt(a, price);
+        double price = calculatePrice(m,showtime);
+        showReceipt(m,a);
 
     }
 }
