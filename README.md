@@ -1,2 +1,2 @@
-﻿#ComPro-Project
-Final source code = editallfunc.cpp
+source code version สุดท้ายอยู่ใน editallfunc.cpp และ editallfunc.h
+
